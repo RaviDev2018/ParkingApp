@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import * as actions from '../../store/action/index';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 
 class Login extends Component {
   constructor(props, context) {
@@ -32,10 +36,20 @@ class Login extends Component {
     this.setState({password: e.target.value, isValid: validCheck});
   }
 
+  handleLogin = (e) => {
+    e.preventDefault();
+    this.props.onLogin(this.state.username, this.state.password);
+  }
+
   render() {
+    let errorDisplay = null;
+    if(this.props.loginMsg !== '') {
+      errorDisplay = <Alert variant="danger" className="mt-4">{this.props.loginMsg}</Alert>;
+    }
+
     return (
-      <Form className="border rounded p-4">
-        <p className="h4 mb-4">Login</p>
+      <Form className="border rounded p-4" onSubmit={this.handleLogin}>
+        <p className="h4 mb-4 text-center">Login</p>
 
         <Form.Group controlId="formUsername">
           <Form.Control placeholder="Username" value={this.state.username} onChange={this.handleChangeUsername} />
@@ -49,9 +63,24 @@ class Login extends Component {
             variant={this.state.isValid ? "primary" : "secondary"} >
           Login
         </Button>
+
+        {errorDisplay}
       </Form>
     );
   }
 }
 
-export default Login;
+const mapStateToProps = state => {
+  return {
+      isLoggedIn: state.auth.isLoggedIn,
+      loginMsg: state.auth.loginMsg
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogin: (username, pass) => dispatch(actions.login(username, pass))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
