@@ -2,38 +2,42 @@ import * as actionTypes from './actionTypes';
 import axios from '../../shared/axios-setup';
 
 export const login = (username, pass) => {
+    const authData = {
+        email: username,
+        password: pass,
+        returnSecureToken: true
+    };
+
+    let authUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD5S1jzJDCNqYn8jhx4kU4WG9gy7hFXO3Q';
+
     return dispatch => {
-        axios.get('admin_users/'+username+'.json')
+        axios.post(authUrl, authData)
             .then(response => {
-                if(response.data === null || response.data === undefined) {
-                    axios.get('users/'+username+'.json')
-                        .then(response => {
-                            if(response.data === null || response.data === undefined) {
-                                dispatch(loginFailed('User not found'));
-                            } else if(response.data.password === pass) {
-                                dispatch(loginSuccess());
-                            } else {
-                                dispatch(loginFailed('Incorrect login details'));
-                            }
-                        })
-                        .catch(error => {
-                            dispatch(authFailed());
-                        });
-                } else if(response.data.password === pass) {
-                    dispatch(loginSuccess());
-                } else {
-                    dispatch(loginFailed('Incorrect login details'));
-                }
+                dispatch(loginSuccess(response.data.idToken, username));
             })
             .catch(error => {
-                dispatch(authFailed());
+                if(error.response) {
+                    let errorMsg = error.response.data.error.message;
+
+                    if(errorMsg === 'INVALID_EMAIL') {
+                        dispatch(loginFailed('User not found'));
+                    } else if(errorMsg === 'INVALID_PASSWORD') {
+                        dispatch(loginFailed('Incorrect login details'));
+                    } else {
+                        dispatch(authFailed());
+                    }
+                } else {
+                    dispatch(authFailed());
+                }
             });
     };
 };
 
-export const loginSuccess = () => {
+export const loginSuccess = (token, userId) => {
     return {
-        type: actionTypes.LOGIN_SUCCESS
+        type: actionTypes.LOGIN_SUCCESS,
+        token: token,
+        userId: userId
     };
 };
 

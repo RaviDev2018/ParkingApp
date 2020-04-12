@@ -3,14 +3,16 @@ import { updatedObject } from '../../shared/utility';
 
 const initialState = {
     error: false,
-    isLoggedIn: false,
-    loginMsg: ''
+    loginMsg: '',
+    token: '',
+    userId: ''
 };
 
 const loginSuccess = (state, action) => {
     return updatedObject(state, {
-        isLoggedIn: true,
-        loginMsg: ''
+        loginMsg: '',
+        token: action.token,
+        userId: action.userId
     });
 };
 
