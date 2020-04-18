@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 import Login from './containers/Login/Login';
+import UserSummary from './containers/UserSummary/UserSummary';
 
 class App extends Component {
   render() {
@@ -18,13 +19,15 @@ class App extends Component {
 
     if(this.props.isLoggedIn) {
       routes = (
-        <p>Sucessfully logged in</p>
+        <Switch>
+          <Route path="/" exact component={UserSummary} />
+        </Switch>
       );
     }
 
     return (
       <Container fluid={true} className="bg-dark text-white vh-100">
-        <Row className="justify-content-md-center align-self-center align-items-center h-100">
+        <Row className="justify-content-md-center align-self-center align-items-center h-100 overflow-auto">
           <Col md="auto">
             {routes}
           </Col>
