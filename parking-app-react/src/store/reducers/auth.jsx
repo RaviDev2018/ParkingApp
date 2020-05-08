@@ -18,7 +18,7 @@ const loginSuccess = (state, action) => {
 
 const loginFailed = (state, action) => {
     return updatedObject(state, {
-        isLoggedIn: false,
+        token: '',
         loginMsg: action.errorMsg
     });
 };

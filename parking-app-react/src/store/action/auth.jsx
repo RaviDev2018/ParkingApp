@@ -13,6 +13,8 @@ export const login = (username, pass) => {
     return dispatch => {
         axios.post(authUrl, authData)
             .then(response => {
+                localStorage.setItem('userToken', response.data.idToken);
+                localStorage.setItem('userId', username);
                 dispatch(loginSuccess(response.data.idToken, username));
             })
             .catch(error => {
@@ -51,5 +53,13 @@ export const loginFailed = (errorMsg) => {
 export const authFailed = () => {
     return {
         type: actionTypes.AUTH_FAILED
+    };
+};
+
+export const authCheckState = () => {
+    return dispatch => {
+        let userToken = localStorage.getItem('userToken') != null ? localStorage.getItem('userToken') : '';
+        let userId = localStorage.getItem('userId') != null ? localStorage.getItem('userId') : '';
+        dispatch(loginSuccess(userToken, userId));
     };
 };

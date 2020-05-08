@@ -6,10 +6,16 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
+import * as actions from './store/action/index';
+
 import Login from './containers/Login/Login';
 import UserSummary from './containers/UserSummary/UserSummary';
 
 class App extends Component {
+  componentDidMount() {
+    this.props.checkAuthToken();
+  }
+
   render() {
     let routes = (
       <Switch>
@@ -43,4 +49,10 @@ const mapStateToProps = state => {
   };
 }
 
-export default withRouter(connect(mapStateToProps, null)(App));
+const mapDispatchToProps = dispatch => {
+  return {
+    checkAuthToken: () => dispatch(actions.authCheckState())
+  };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
