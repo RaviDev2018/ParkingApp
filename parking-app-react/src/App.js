@@ -10,6 +10,7 @@ import * as actions from './store/action/index';
 
 import Login from './containers/Login/Login';
 import UserSummary from './containers/UserSummary/UserSummary';
+import DaySummary from './containers/DaySummary/DaySummary';
 
 class App extends Component {
   componentDidMount() {
@@ -27,6 +28,7 @@ class App extends Component {
       routes = (
         <Switch>
           <Route path="/" exact component={UserSummary} />
+          <Route path="/daySummary" component={DaySummary} />
         </Switch>
       );
     }
